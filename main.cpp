@@ -4,8 +4,9 @@
 #include <fstream>
 #include <string>
 #include <windows.h>
-
-using namespace std;
+#include "Jogador.h"
+#include "Tabuleiro.h"
+#include <conio.h>
 
 // Estrutura para mapear as posições no tabuleiro do console
 struct Posicao {
@@ -25,8 +26,7 @@ Posicao caminho[28] = {
     {13, 26},{13, 30},{13, 34},{13, 38}                            // Casas 24 a 27 (Fim)
 };
 
-int posP = 0;
-int posS = 0;
+
 string nomeJ1 = "Jogador 1";
 string nomeJ2 = "Jogador 2";
 
@@ -58,7 +58,7 @@ void inicializarTabuleiro() {
 }
 
 // Imprime o tabuleiro simplificado com cores no console
-void desenharTabuleiroConsole() {
+void desenharTabuleiroConsole(sjogador& c, sjogador& c1) {
     system("cls");
     cout << "=========================================================\n";
     cout << "                  TABULEIRO XAVIER                       \n";
@@ -66,8 +66,8 @@ void desenharTabuleiroConsole() {
 
     for (int i = 0; i < 15; i++) {
         for (int j = 0; j < 60; j++) {
-            bool ehP = (i == caminho[posP].lin && j == caminho[posP].col);
-            bool ehS = (i == caminho[posS].lin && j == caminho[posS].col);
+            bool ehP = (i == caminho[c.posicao].lin && j == caminho[c.posicao].col);
+            bool ehS = (i == caminho[c1.posicao].lin && j == caminho[c1.posicao].col);
 
             if (ehP && ehS) {
                 mudarCor(13); // Roxo se ambos estiverem na mesma casa
@@ -98,11 +98,36 @@ void desenharTabuleiroConsole() {
     cout << "=========================================================\n\n";
 }
 
+
+//função de
+void roleta( sjogador &jogador){
+int giro= rand()% 8;
+if (giro==0){
+cout<<"Alcides passou 3 lista de exercício, volte 3 casas."<< endl;
+jogador.posicao-=3;
+return;
+}
+else if(giro==1){
+    cout<<"Você não entendeu nada da aula, perdeu 5 de vida."<< endl;
+    jogador.vida-=5;
+    return;
+}
+else if(giro==2){
+    cout<<"Alcides passou 5 lista de exercício, volte 5 casas."<< endl;
+jogador.posicao-=5;
+return;
+}
+else if(giro==3){
+     cout<<"Você não respondeu as atividades e perdeu 10 de vida."<< endl;
+    jogador.vida-=10;
+    return;
+    }
+}
 // Funções de Gestão do Histórico
-void historicoDePartidas(string j1, string j2, string ganhador) {
+void historicoDePartidas(sjogador j1, sjogador j2, string ganhador) {
     ofstream historico("Historico.txt", ios::app);
     if (historico.is_open()) {
-        historico << j1 << " VS " << j2 << " | Vencedor: " << ganhador << endl;
+        historico << j1.nome << " VS " << j2.nome << " | Vencedor: " << ganhador << endl;
         historico.close();
         cout << "\n[Histórico] Partida registada com sucesso!" << endl;
     }
@@ -140,8 +165,16 @@ void apagarHistorico() {
 
 // Lógica Principal do Jogo
 void iniciarJogo() {
-    posP = 0;
-    posS = 0;
+    // 1. Instanciar os objetos da struct para cada jogador
+    sjogador j1;
+    sjogador j2;
+
+    j1.posicao = 0;
+    j1.vida = 100; // Defina a vida inicial (ex: 100)
+
+    j2.posicao = 0;
+    j2.vida = 100;
+
     bool fimDeJogo = false;
     string vencedor = "";
 
@@ -151,57 +184,85 @@ void iniciarJogo() {
     int turno = (rand() % 2) + 1;
 
     cout << "\nDigite o nome do Jogador 1 (P): ";
-    cin >> nomeJ1;
+    cin >> j1.nome;
     cout << "Digite o nome do Jogador 2 (S): ";
-    cin >> nomeJ2;
-
-    cin.ignore();
+    cin >> j2.nome;
+    
+    
+    cout <<"Aperte qualquer tecla para dar inicio a partida:" << endl;
+    getch();
 
     while (!fimDeJogo) {
-        desenharTabuleiroConsole();
+             
+        desenharTabuleiroConsole(j1, j2);
 
-        string jogadorAtual = (turno == 1) ? nomeJ1 : nomeJ2;
-        cout << "Vez de " << jogadorAtual << " (Pressione ENTER para jogar o dado)...";
+        // Identifica qual é o objeto do jogador atual
+        string nomeAtual = (turno == 1) ? j1.nome : j2.nome;
+        cout << "Vez de " << nomeAtual << " (Pressione ENTER para jogar o dado)..." << endl;
         cin.get();
 
         int dado = (rand() % 6) + 1;
-        cout << jogadorAtual << " tirou o número: " << dado << endl;
+        cout << nomeAtual << " tirou o numero: " << dado << endl;
 
         if (turno == 1) {
-            posP += dado;
-            if (posP >= 27) {
-                posP = 27;
-                vencedor = nomeJ1;
+            // Atualiza a posição do Jogador 1
+            j1.posicao += dado;
+
+            // Chama a roleta passando a struct do Jogador 1
+            if (j1.posicao == 4 || j1.posicao == 9 || j1.posicao == 14 || j1.posicao == 20) {
+                cout << "\nCAIU NUMA CASA ESPECIAL!\n";
+                roleta(j1);
+            }
+
+            // Evita posições negativas caso a roleta mande recuar
+            if (j1.posicao < 0) j1.posicao = 0;
+
+            // Verifica vitória
+            if (j1.posicao >= 27 || j2.vida <= 0) {
+                j1.posicao = 27;
+                vencedor = j1.nome;
+                cout << "Fim de Jogo! vencedor:"  << vencedor <<endl;
+                historicoDePartidas(j1, j2,vencedor);
                 fimDeJogo = true;
+                getch();
+                
             }
             turno = 2;
+
         } else {
-            posS += dado;
-            if (posS >= 27) {
-                posS = 27;
-                vencedor = nomeJ2;
+            // Atualiza a posição do Jogador 2
+            j2.posicao += dado;
+
+            // Chama a roleta passando a struct do Jogador 2
+            if (j2.posicao == 4 || j2.posicao == 9 || j2.posicao == 14 || j2.posicao == 20) {
+                cout << "\nCAIU NUMA CASA ESPECIAL!\n";
+                roleta(j2);
+            }
+
+            // Evita posições negativas
+            if (j2.posicao < 0) j2.posicao = 0;
+
+            // Verifica vitória
+            if (j2.posicao >= 27 || j1.vida <= 0) {
+                j2.posicao = 27;
+                vencedor = j2.nome;
+                cout << "Fim de Jogo! vencedor:"  << vencedor <<endl;
+                 historicoDePartidas(j1, j2,vencedor);
                 fimDeJogo = true;
+                getch();
+                return;
             }
             turno = 1;
         }
-
+        cout << "Aperte qualquer tecla para passar o seu turno:" << endl;
+        getch();
         Sleep(1000);
+        
     }
-
-    desenharTabuleiroConsole();
-    cout << "\n=================================" << endl;
-    cout << "  VENCEDOR: " << vencedor << "!" << endl;
-    cout << "=================================\n" << endl;
-
-    historicoDePartidas(nomeJ1, nomeJ2, vencedor);
-
-    cout << "\nPressione ENTER para voltar ao menu principal...";
-    cin.get();
 }
-
 // Menu Principal Corrigido
 void menuPrincipal() {
-    int opcao = 0;
+    char opcao;
     do {
         system("cls");
         cout << "*********************************************\n";
@@ -215,17 +276,18 @@ void menuPrincipal() {
         cin >> opcao;
 
         switch (opcao) {
-            case 1:
+            case '1':
                 iniciarJogo();
                 break;
-            case 2:
+            case '2':
                 imprimirHistorico();
                 break;
-            case 3:
+            case '3':
                 apagarHistorico();
                 break;
-            case 4:
+            case '4':
                 cout << "\nA sair do jogo..." << endl;
+                exit(1);
                 break;
             default:
                 cout << "\nOpção inválida!" << endl;
