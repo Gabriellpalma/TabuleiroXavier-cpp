@@ -255,13 +255,30 @@ void iniciarJogo() {
             jogadorP.posicao=posP;
             roleta(jogadorP);
             posP=jogadorP.posicao;
+                
+                if(jogadorP.vida<=0){
+                    jogadorP.vida=0;
+                    vencedor=nomeJ2;
+                    fimDeJogo=true;
+                }
 
             } else{
             jogadorS.posicao=posS;
             roleta(jogadorS);
             posS=jogadorS.posicao;
+                
+                 if(jogadorS.vida<=0){
+                    jogadorS.vida=0;
+                    vencedor=nomeJ1;
+                    fimDeJogo=true;
+                 }
+
             }
             Sleep(1500);
+        }
+
+        if(fimDeJogo){
+            break;
         }
 
         if (turno == 1) {
