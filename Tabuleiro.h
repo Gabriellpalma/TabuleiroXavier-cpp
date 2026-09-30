@@ -2,7 +2,22 @@
 #define FUNCOES_JOGO
 #include "Jogador.h"
 #include <iostream>
+#include <string>
+//Biblioteca Gráfica e Menu{
+void mudarCor(int cor);
+void menuPrincipal(char& opcao);
+//}
+
+//Funções da lógica do jogo{
 void roleta( sjogador &jogador); 
+void iniciarJogo(sjogador j1, sjogador j2, char tab [][60]);
+void desenharTabuleiroConsole(sjogador& j1, sjogador& j2, char tab [][60]);
+void inicializarTabuleiro(char tab[][60]);
+//
 
-
+// Funções de manipulação de arquivos{
+void apagarHistorico();
+void imprimirHistorico();
+void historicoDePartidas(sjogador j1, sjogador j2, string ganhador);
+// 
 #endif
