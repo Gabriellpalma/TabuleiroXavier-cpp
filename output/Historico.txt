@@ -1,14 +1,1 @@
-sdfdsf VS asdas | Vencedor: asdas
-asd VS asd | Vencedor: asd
-sadasd VS asda | Vencedor: asda
-asdsa VS dfdf | Vencedor: asdsa
-Gabriel VS Pedro | Vencedor: Pedro
-Gabre VS gu | Vencedor: gu
-asd VS aaaaa | Vencedor: asd
-Gabrek VS Julioa | Vencedor: Gabrek
-asdasdas VS adsaaaaaaaaaa | Vencedor: asdasdas
-sadasw VS asa | Vencedor: sadasw
-Gabriekl VS Joao | Vencedor: Joao
-Hugo VS Jacinto | Vencedor: Hugo
-Gabsad VS asd | Vencedor: Gabsad
-GAsdb VS sada | Vencedor: GAsdb
+
