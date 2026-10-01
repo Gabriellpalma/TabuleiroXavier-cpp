@@ -4,7 +4,7 @@ using namespace std;
 #include <string>
 // Estrutura do Jogador    
     struct sjogador{
-        string nome;
+        char nome[30];
         int vida;
         int posicao;
     };
