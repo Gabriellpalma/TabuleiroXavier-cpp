@@ -4,6 +4,10 @@
 #include "Jogador.h"
 #include "Tabuleiro.h"
 #include "windows.h"
+#include <clocale>
+
+using namespace std;
+
 int main() {
     setlocale(LC_ALL, "Portuguese");
     srand(time(0));
