@@ -35,18 +35,6 @@ Posicao caminho[28] =
 
 string nomeJ1 = "Jogador 1";
 string nomeJ2 = "Jogador 2";
-//deternima se o jogador vai participar da rodada
-bool rodadaP= true;
-bool rodadaS= true;
-//determina se o jodagor pode girar o dado duas vezes
-bool doisDadosP=false;
-bool doisDadosS=false;
-//deternima se o jodador pode girar a roleta X
-bool roletaP=true;
-bool roletaS=true;
-//determina se o jodagor pode girar o dado duas vezes e somas esses valores
-bool somaDadosP=false;
-bool somaDadosS=false;
 
 
 // Função para mudar a cor do texto no console
@@ -153,7 +141,7 @@ void desenharTabuleiroConsole(sjogador& c, sjogador& c1)
 }
 
 //roleta
-void roleta( sjogador &jogador)
+void eventosEspeciais( sjogador &jogador)
 {
     int giro= rand()% 8;
     if (giro==0)
@@ -243,7 +231,7 @@ void roleta( sjogador &jogador)
 
 //casas especiais
 
-void casasEspeciais(sjogador &jogador, sjogador &adversario, bool ehJ1)
+void eventosEspeciais(sjogador &jogador, sjogador &adversario, bool ehJ1,bool &rodadaP, bool &rodadaS, bool &doisDadosP, bool &doisDadosS, bool &roletaP, bool &roletaS, bool &somaDadosP, bool &somaDadosS)
 {
     if(jogador.posicao==4)
     {
@@ -492,6 +480,20 @@ void iniciarJogo()
     // 1. Instanciar os objetos da struct para cada jogador
     sjogador j1;
     sjogador j2;
+    
+    //deternima se o jogador vai participar da rodada
+bool rodadaP= true;
+bool rodadaS= true;
+//determina se o jodagor pode girar o dado duas vezes
+bool doisDadosP=false;
+bool doisDadosS=false;
+//deternima se o jodador pode girar a roleta X
+bool roletaP=true;
+bool roletaS=true;
+//determina se o jodagor pode girar o dado duas vezes e somas esses valores
+bool somaDadosP=false;
+bool somaDadosS=false;
+
 
     j1.posicao = 0;
     j1.vida = 50; // Defina a vida inicial como 50, podendo chegar até a 100
@@ -577,7 +579,7 @@ void iniciarJogo()
                 if(roletaP)
                 {
                     cout<<"\nVocê tirou 6! Girando Roleta X...\n";
-                    roleta(j1);
+                    eventosEspeciais(j1);
                 }
                 else
                 {
@@ -590,7 +592,7 @@ void iniciarJogo()
             if (j1.posicao == 4 || j1.posicao == 9 || j1.posicao == 14 || j1.posicao == 20)
             {
                 cout << "\n CASA ESPECIAL!\n";
-                casasEspeciais(j1,j2, true);
+                eventosEspeciais(j1,j2, true, rodadaP, rodadaS, doisDadosP, doisDadosS, roletaP, roletaS, somaDadosP, somaDadosS);
             }
 
             // Evita posições negativas caso a roleta mande recuar
@@ -660,7 +662,7 @@ void iniciarJogo()
                 if(roletaS)
                 {
                     cout<<"\nVocê tirou 6! Girando Roleta X...\n";
-                    roleta(j2);
+                    eventosEspeciais(j2);
                 }
                 else
                 {
@@ -673,7 +675,7 @@ void iniciarJogo()
             if (j2.posicao == 4 || j2.posicao == 9 || j2.posicao == 14 || j2.posicao == 20)
             {
                 cout << "\nCASA ESPECIAL!\n";
-                casasEspeciais(j2,j1, false);
+                eventosEspeciais(j2,j1, false, rodadaP, rodadaS, doisDadosP, doisDadosS, roletaP, roletaS, somaDadosP, somaDadosS);
             }
 
             // Evita posições negativas
